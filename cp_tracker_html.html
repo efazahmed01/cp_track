@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CP Contest Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #d8b4fe;
+            font-size: 1rem;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(168, 85, 247, 0.4);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.6);
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #dc2626;
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .overall-progress {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.2) 0%, rgba(59, 130, 246, 0.2) 100%);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-bottom: 20px;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .progress-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .progress-percentage {
+            font-size: 2rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 12px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981 0%, #3b82f6 100%);
+            transition: width 0.5s ease;
+            border-radius: 10px;
+        }
+
+        .progress-text {
+            color: #d8b4fe;
+            font-size: 0.875rem;
+            margin-top: 8px;
+        }
+
+        .form-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            margin-top: 20px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #d8b4fe;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+        }
+
+        textarea {
+            font-family: 'Courier New', monospace;
+            resize: vertical;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .contest-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .contest-header {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.2) 0%, rgba(236, 72, 153, 0.2) 100%);
+            padding: 20px;
+        }
+
+        .contest-header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .contest-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+        .toggle-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .contest-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .contest-link {
+            color: #d8b4fe;
+            text-decoration: none;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 5px;
+        }
+
+        .contest-link:hover {
+            color: #e9d5ff;
+        }
+
+        .contest-stats {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stats-box {
+            text-align: right;
+        }
+
+        .stats-percentage {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: white;
+        }
+
+        .stats-solved {
+            font-size: 0.875rem;
+            color: #d8b4fe;
+        }
+
+        .delete-btn {
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            color: #fca5a5;
+            padding: 10px;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2rem;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: rgba(239, 68, 68, 0.4);
+            color: #fee2e2;
+        }
+
+        .contest-body {
+            padding: 20px;
+        }
+
+        .problems-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .problem-btn {
+            aspect-ratio: 1;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.75rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+        }
+
+        .problem-btn.unsolved {
+            background: linear-gradient(135deg, #a855f7 0%, #7c3aed 100%);
+            color: white;
+        }
+
+        .problem-btn.unsolved:hover {
+            background: linear-gradient(135deg, #9333ea 0%, #6d28d9 100%);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(168, 85, 247, 0.4);
+        }
+
+        .problem-btn.solved {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .problem-btn.solved:hover {
+            transform: scale(1.05);
+        }
+
+        .empty-state {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 60px 20px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        .empty-text {
+            font-size: 1.25rem;
+            color: #d8b4fe;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, #1e293b 0%, #581c87 100%);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .problem-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+
+        .problem-badge.unsolved {
+            background: #a855f7;
+            color: #581c87;
+        }
+
+        .problem-badge.solved {
+            background: #10b981;
+            color: #065f46;
+        }
+
+        .modal-title {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #d8b4fe;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .problems-grid {
+                grid-template-columns: repeat(5, 1fr);
+            }
+
+            .contest-header-content {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .contest-stats {
+                width: 100%;
+                justify-content: space-between;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-top">
+                <div>
+                    <h1>🏆 CP Contest Tracker</h1>
+                    <p class="subtitle">Organize your competitive programming journey</p>
+                </div>
+                <button onclick="toggleAddContest()" class="btn btn-primary">
+                    <span>+</span>
+                    <span>Add Contest</span>
+                </button>
+            </div>
+
+            <!-- Overall Progress -->
+            <div id="overallProgress" class="overall-progress hidden">
+                <div class="progress-header">
+                    <span class="progress-title">📈 Overall Progress</span>
+                    <span id="overallPercentage" class="progress-percentage">0%</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div id="overallBar" class="progress-bar" style="width: 0%"></div>
+                </div>
+                <p class="progress-text">Average across all contests</p>
+            </div>
+
+            <!-- Add Contest Form -->
+            <div id="addContestForm" class="form-container hidden">
+                <input type="text" id="contestName" placeholder="Contest Name">
+                <input type="text" id="contestLink" placeholder="Contest Link (optional)">
+                <div class="btn-group">
+                    <button onclick="saveContest()" class="btn btn-success">Create Contest (A-J problems)</button>
+                    <button onclick="toggleAddContest()" class="btn btn-danger">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contests List -->
+        <div id="contestsList">
+            <div class="empty-state">
+                <div class="empty-icon">💻</div>
+                <p class="empty-text">No contests yet. Add your first contest to get started!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Problem Modal -->
+    <div id="problemModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div id="problemBadge" class="problem-badge unsolved">A</div>
+                <h3 id="problemTitle" class="modal-title">Problem A</h3>
+            </div>
+            <div class="form-group">
+                <label>💾 Code:</label>
+                <textarea id="problemCode" placeholder="Enter your code here..." rows="12"></textarea>
+            </div>
+            <div class="form-group">
+                <label>📝 Explanation:</label>
+                <textarea id="problemExplanation" placeholder="Explain your approach and solution..." rows="6"></textarea>
+            </div>
+            <div class="btn-group">
+                <button onclick="submitProblem()" class="btn btn-success">💾 Submit Solution</button>
+                <button onclick="closeProblemModal()" class="btn btn-secondary">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let contests = [];
+        let currentProblem = null;
+        const problemLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
+
+        window.onload = function() {
+            loadContests();
+            renderContests();
+        };
+
+        function loadContests() {
+            const saved = localStorage.getItem('cp-contests');
+            if (saved) {
+                contests = JSON.parse(saved);
+            }
+        }
+
+        function saveToStorage() {
+            localStorage.setItem('cp-contests', JSON.stringify(contests));
+        }
+
+        function toggleAddContest() {
+            const form = document.getElementById('addContestForm');
+            form.classList.toggle('hidden');
+        }
+
+        function saveContest() {
+            const name = document.getElementById('contestName').value.trim();
+            const link = document.getElementById('contestLink').value.trim();
+            
+            if (!name) {
+                alert('Please enter a contest name');
+                return;
+            }
+
+            const contest = {
+                id: Date.now(),
+                name: name,
+                link: link,
+                expanded: true,
+                problems: problemLabels.map(label => ({
+                    id: `${Date.now()}-${label}`,
+                    name: label,
+                    code: '',
+                    explanation: ''
+                }))
+            };
+
+            contests.push(contest);
+            saveToStorage();
+            
+            document.getElementById('contestName').value = '';
+            document.getElementById('contestLink').value = '';
+            toggleAddContest();
+            renderContests();
+        }
+
+        function deleteContest(contestId) {
+            if (confirm('Delete this contest and all its problems?')) {
+                contests = contests.filter(c => c.id !== contestId);
+                saveToStorage();
+                renderContests();
+            }
+        }
+
+        function toggleContest(contestId) {
+            const contest = contests.find(c => c.id === contestId);
+            contest.expanded = !contest.expanded;
+            saveToStorage();
+            renderContests();
+        }
+
+        function openProblem(contestId, problemId) {
+            const contest = contests.find(c => c.id === contestId);
+            const problem = contest.problems.find(p => p.id === problemId);
+            
+            currentProblem = { contestId, problemId };
+            
+            const solved = isSolved(problem);
+            const badge = document.getElementById('problemBadge');
+            badge.textContent = problem.name;
+            badge.className = `problem-badge ${solved ? 'solved' : 'unsolved'}`;
+            
+            document.getElementById('problemTitle').innerHTML = `Problem ${problem.name} ${solved ? '✓' : ''}`;
+            document.getElementById('problemCode').value = problem.code;
+            document.getElementById('problemExplanation').value = problem.explanation;
+            document.getElementById('problemModal').classList.add('active');
+        }
+
+        function closeProblemModal() {
+            document.getElementById('problemModal').classList.remove('active');
+            currentProblem = null;
+        }
+
+        function submitProblem() {
+            const code = document.getElementById('problemCode').value;
+            const explanation = document.getElementById('problemExplanation').value;
+
+            const contest = contests.find(c => c.id === currentProblem.contestId);
+            const problem = contest.problems.find(p => p.id === currentProblem.problemId);
+            
+            problem.code = code;
+            problem.explanation = explanation;
+            
+            saveToStorage();
+            closeProblemModal();
+            renderContests();
+        }
+
+        function isSolved(problem) {
+            return problem.code.trim() !== '' && problem.explanation.trim() !== '';
+        }
+
+        function calculatePercentage(contest) {
+            const solved = contest.problems.filter(p => isSolved(p)).length;
+            return Math.round((solved / contest.problems.length) * 100);
+        }
+
+        function calculateOverallPercentage() {
+            if (contests.length === 0) return 0;
+            const total = contests.reduce((sum, c) => sum + calculatePercentage(c), 0);
+            return Math.round(total / contests.length);
+        }
+
+        function renderContests() {
+            const list = document.getElementById('contestsList');
+            
+            if (contests.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">💻</div>
+                        <p class="empty-text">No contests yet. Add your first contest to get started!</p>
+                    </div>
+                `;
+                document.getElementById('overallProgress').classList.add('hidden');
+                return;
+            }
+
+            const overall = calculateOverallPercentage();
+            document.getElementById('overallProgress').classList.remove('hidden');
+            document.getElementById('overallPercentage').textContent = overall + '%';
+            document.getElementById('overallBar').style.width = overall + '%';
+
+            list.innerHTML = contests.map(contest => {
+                const percentage = calculatePercentage(contest);
+                const solved = contest.problems.filter(p => isSolved(p)).length;
+                
+                return `
+                    <div class="contest-card">
+                        <div class="contest-header">
+                            <div class="contest-header-content">
+                                <div class="contest-info">
+                                    <button onclick="toggleContest(${contest.id})" class="toggle-btn">
+                                        ${contest.expanded ? '▼' : '▶'}
+                                    </button>
+                                    <div>
+                                        <div class="contest-title">${contest.name}</div>
+                                        ${contest.link ? `<a href="${contest.link}" target="_blank" class="contest-link">🔗 Contest Link</a>` : ''}
+                                    </div>
+                                </div>
+                                <div class="contest-stats">
+                                    <div class="stats-box">
+                                        <div class="stats-percentage">${percentage}%</div>
+                                        <div class="stats-solved">${solved}/10 solved</div>
+                                    </div>
+                                    <button onclick="deleteContest(${contest.id})" class="delete-btn">🗑️</button>
+                                </div>
+                            </div>
+                            <div class="progress-bar-container">
+                                <div class="progress-bar" style="width: ${percentage}%"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="contest-body ${contest.expanded ? '' : 'hidden'}">
+                            <div class="problems-grid">
+                                ${contest.problems.map(problem => `
+                                    <button onclick="openProblem(${contest.id}, '${problem.id}')" 
+                                        class="problem-btn ${isSolved(problem) ? 'solved' : 'unsolved'}">
+                                        <span>${problem.name}</span>
+                                        ${isSolved(problem) ? '<span>✓</span>' : ''}
+                                    </button>
+                                `).join('')}
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    </script>
+</body>
+</html>
