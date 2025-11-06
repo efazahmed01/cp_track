@@ -76,6 +76,24 @@
             width: 400px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .login-close {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: #fca5a5;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .login-close:hover {
+            color: #fee2e2;
+            transform: scale(1.1);
         }
 
         .login-title {
@@ -452,6 +470,31 @@
             overflow-y: auto;
             border: 1px solid rgba(255, 255, 255, 0.2);
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: none;
+            border: none;
+            color: #fca5a5;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background: rgba(239, 68, 68, 0.2);
+            color: #fee2e2;
+            transform: scale(1.1);
         }
 
         .modal-header {
@@ -459,6 +502,7 @@
             align-items: center;
             gap: 15px;
             margin-bottom: 25px;
+            padding-right: 50px;
         }
 
         .problem-badge {
@@ -529,15 +573,6 @@
             background: #1a1a1a !important;
             max-height: 400px;
         }
-
-        /* Syntax Highlighting */
-        .code-keyword { color: #ff79c6; }
-        .code-string { color: #f1fa8c; }
-        .code-comment { color: #6272a4; }
-        .code-number { color: #bd93f9; }
-        .code-function { color: #50fa7b; }
-        .code-preprocessor { color: #ffb86c; }
-        .code-type { color: #8be9fd; }
 
         .comments-section {
             margin-top: 25px;
@@ -623,6 +658,12 @@
                 font-size: 12px;
                 padding: 15px !important;
             }
+
+            .modal-close {
+                top: 15px;
+                right: 20px;
+                font-size: 1.5rem;
+            }
         }
     </style>
     <!-- Add Fira Code font for better code display -->
@@ -639,6 +680,7 @@
     <!-- Admin Login Modal -->
     <div id="loginModal" class="login-modal">
         <div class="login-box">
+            <button class="login-close" onclick="closeLogin()">×</button>
             <h2 class="login-title">🔐 Admin Login</h2>
             <input type="text" id="adminUser" placeholder="Email">
             <input type="password" id="adminPass" placeholder="Password">
@@ -697,6 +739,7 @@
     <!-- Problem Modal -->
     <div id="problemModal" class="modal">
         <div class="modal-content">
+            <button class="modal-close" onclick="closeProblemModal()">×</button>
             <div class="modal-header">
                 <div id="problemBadge" class="problem-badge unsolved">A</div>
                 <h3 id="problemTitle" class="modal-title">Problem A</h3>
@@ -972,7 +1015,7 @@
                 document.getElementById('userView').classList.remove('hidden');
                 document.getElementById('submitBtn').classList.add('hidden');
                 
-                // Format code with basic syntax highlighting for display
+                // Format code for display
                 const formattedCode = formatCodeForDisplay(problem.code);
                 document.getElementById('codeView').innerHTML = formattedCode || '<span style="color: #6272a4;">No code added yet</span>';
                 document.getElementById('explanationView').textContent = problem.explanation || 'No explanation added yet';
@@ -982,24 +1025,15 @@
             document.getElementById('problemModal').classList.add('active');
         }
 
-        // Basic code formatting for display
+        // Simple and clean code display - no syntax highlighting issues
         function formatCodeForDisplay(code) {
-            if (!code) return '';
+            if (!code) return '<span style="color: #6272a4;">No code added yet</span>';
             
+            // Simply escape HTML and preserve whitespace
             return code
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&#039;')
-                .replace(/#include/g, '<span class="code-preprocessor">#include</span>')
-                .replace(/\busing namespace\b/g, '<span class="code-keyword">using namespace</span>')
-                .replace(/\b(int|void|bool|char|double|float|long|short|auto)\b/g, '<span class="code-type">$1</span>')
-                .replace(/\b(if|else|for|while|do|return|break|continue|switch|case|default)\b/g, '<span class="code-keyword">$1</span>')
-                .replace(/\b(cin|cout|endl)\b/g, '<span class="code-function">$1</span>')
-                .replace(/"([^"]*)"/g, '<span class="code-string">"$1"</span>')
-                .replace(/\/\/.*$/gm, '<span class="code-comment">$&</span>')
-                .replace(/\b(\d+)\b/g, '<span class="code-number">$1</span>');
+                .replace(/>/g, '&gt;');
         }
 
         function closeProblemModal() {
@@ -1097,7 +1131,7 @@
                 list.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">💻</div>
-                        <p class="empty-text">No contests yet. ${isAdmin ? 'Click "Add Contest" to get started!' : 'Admin can add contests!'}</p>
+                        <div class="empty-text">No contests yet. ${isAdmin ? 'Click "Add Contest" to get started!' : 'Admin can add contests!'}</div>
                     </div>
                 `;
                 document.getElementById('overallProgress').classList.add('hidden');
