@@ -12,7 +12,7 @@
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%);
             min-height: 100vh;
             padding: 20px;
@@ -21,6 +21,69 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
+        }
+
+        .admin-btn-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+
+        .admin-toggle {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);
+            transition: all 0.3s;
+        }
+
+        .admin-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.6);
+        }
+
+        .admin-toggle.logged-in {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+
+        .login-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+            z-index: 200;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-modal.active {
+            display: flex;
+        }
+
+        .login-box {
+            background: linear-gradient(135deg, #1e293b 0%, #581c87 100%);
+            border-radius: 20px;
+            padding: 40px;
+            width: 400px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .login-title {
+            color: white;
+            font-size: 1.75rem;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-align: center;
         }
 
         .header {
@@ -51,7 +114,6 @@
 
         .subtitle {
             color: #d8b4fe;
-            font-size: 1rem;
         }
 
         .btn {
@@ -103,6 +165,33 @@
 
         .btn-secondary:hover {
             background: #4b5563;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 15px;
+            outline: none;
+            transition: all 0.3s;
+        }
+
+        input::placeholder, textarea::placeholder {
+            color: #d8b4fe;
+        }
+
+        input:focus, textarea:focus {
+            border-color: #a855f7;
+            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
+        }
+
+        textarea {
+            font-family: 'Courier New', monospace;
+            resize: vertical;
         }
 
         .overall-progress {
@@ -159,33 +248,6 @@
             padding: 20px;
             border: 1px solid rgba(255, 255, 255, 0.2);
             margin-top: 20px;
-        }
-
-        input, textarea {
-            width: 100%;
-            padding: 12px 16px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            border-radius: 10px;
-            color: white;
-            font-size: 1rem;
-            margin-bottom: 15px;
-            outline: none;
-            transition: all 0.3s;
-        }
-
-        input::placeholder, textarea::placeholder {
-            color: #d8b4fe;
-        }
-
-        input:focus, textarea:focus {
-            border-color: #a855f7;
-            box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.2);
-        }
-
-        textarea {
-            font-family: 'Courier New', monospace;
-            resize: vertical;
         }
 
         .btn-group {
@@ -303,7 +365,6 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
             gap: 15px;
-            margin-bottom: 20px;
         }
 
         .problem-btn {
@@ -425,9 +486,6 @@
             font-size: 1.75rem;
             font-weight: bold;
             color: white;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
         .form-group {
@@ -444,6 +502,67 @@
             font-size: 0.95rem;
         }
 
+        .view-only {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-family: 'Courier New', monospace;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .comments-section {
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .comments-title {
+            color: white;
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+        }
+
+        .comment-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 12px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .comment-author {
+            color: #a855f7;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .comment-time {
+            color: #9ca3af;
+            font-size: 0.75rem;
+        }
+
+        .comment-text {
+            color: #e5e7eb;
+            font-size: 0.95rem;
+        }
+
+        .loading {
+            color: #d8b4fe;
+            text-align: center;
+            padding: 20px;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -457,28 +576,50 @@
                 grid-template-columns: repeat(5, 1fr);
             }
 
-            .contest-header-content {
-                flex-direction: column;
-                align-items: flex-start;
+            .admin-btn-container {
+                top: 10px;
+                right: 10px;
             }
 
-            .contest-stats {
-                width: 100%;
-                justify-content: space-between;
+            .admin-toggle {
+                padding: 10px 20px;
+                font-size: 0.875rem;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Admin Button (Top Right) -->
+    <div class="admin-btn-container">
+        <button id="adminBtn" class="admin-toggle" onclick="toggleAdmin()">
+            👑 Admin Login
+        </button>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="loginModal" class="login-modal">
+        <div class="login-box">
+            <h2 class="login-title">🔐 Admin Login</h2>
+            <input type="text" id="adminUser" placeholder="Username">
+            <input type="password" id="adminPass" placeholder="Password">
+            <button onclick="adminLogin()" class="btn btn-success" style="width: 100%; justify-content: center; margin-bottom: 10px;">
+                Login
+            </button>
+            <button onclick="closeLogin()" class="btn btn-secondary" style="width: 100%; justify-content: center;">
+                Cancel
+            </button>
+        </div>
+    </div>
+
+    <!-- Main App -->
     <div class="container">
-        <!-- Header -->
         <div class="header">
             <div class="header-top">
                 <div>
                     <h1>🏆 CP Contest Tracker</h1>
-                    <p class="subtitle">Organize your competitive programming journey</p>
+                    <p class="subtitle">Track your competitive programming progress</p>
                 </div>
-                <button onclick="toggleAddContest()" class="btn btn-primary">
+                <button id="addContestBtn" onclick="toggleAddContest()" class="btn btn-primary hidden">
                     <span>+</span>
                     <span>Add Contest</span>
                 </button>
@@ -496,7 +637,7 @@
                 <p class="progress-text">Average across all contests</p>
             </div>
 
-            <!-- Add Contest Form -->
+            <!-- Add Contest Form (Admin Only) -->
             <div id="addContestForm" class="form-container hidden">
                 <input type="text" id="contestName" placeholder="Contest Name">
                 <input type="text" id="contestLink" placeholder="Contest Link (optional)">
@@ -509,10 +650,7 @@
 
         <!-- Contests List -->
         <div id="contestsList">
-            <div class="empty-state">
-                <div class="empty-icon">💻</div>
-                <p class="empty-text">No contests yet. Add your first contest to get started!</p>
-            </div>
+            <div class="loading">⏳ Loading contests...</div>
         </div>
     </div>
 
@@ -523,48 +661,185 @@
                 <div id="problemBadge" class="problem-badge unsolved">A</div>
                 <h3 id="problemTitle" class="modal-title">Problem A</h3>
             </div>
-            <div class="form-group">
-                <label>💾 Code:</label>
-                <textarea id="problemCode" placeholder="Enter your code here..." rows="12"></textarea>
+            
+            <!-- Admin Edit View -->
+            <div id="adminView" class="hidden">
+                <div class="form-group">
+                    <label>💾 Code:</label>
+                    <textarea id="problemCode" placeholder="Enter your code here..." rows="12"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>📝 Explanation:</label>
+                    <textarea id="problemExplanation" placeholder="Explain your approach..." rows="6"></textarea>
+                </div>
             </div>
-            <div class="form-group">
-                <label>📝 Explanation:</label>
-                <textarea id="problemExplanation" placeholder="Explain your approach and solution..." rows="6"></textarea>
+
+            <!-- User View (Read-only) -->
+            <div id="userView">
+                <div class="form-group">
+                    <label>💾 Code:</label>
+                    <div id="codeView" class="view-only">No code added yet</div>
+                </div>
+                <div class="form-group">
+                    <label>📝 Explanation:</label>
+                    <div id="explanationView" class="view-only">No explanation added yet</div>
+                </div>
             </div>
-            <div class="btn-group">
-                <button onclick="submitProblem()" class="btn btn-success">💾 Submit Solution</button>
+
+            <!-- Comments Section -->
+            <div class="comments-section">
+                <div class="comments-title">💬 Comments & Doubts</div>
+                <div id="commentsList"></div>
+                <div class="form-group">
+                    <input type="text" id="userName" placeholder="Your Name">
+                    <textarea id="commentInput" placeholder="Ask your doubt or add a comment..." rows="3"></textarea>
+                </div>
+                <button onclick="addComment()" class="btn btn-primary">Post Comment</button>
+            </div>
+
+            <div class="btn-group" style="margin-top: 20px;">
+                <button id="submitBtn" onclick="submitProblem()" class="btn btn-success hidden">💾 Submit Solution</button>
                 <button onclick="closeProblemModal()" class="btn btn-secondary">Close</button>
             </div>
         </div>
     </div>
 
-    <script>
+    <!-- Firebase SDK -->
+    <script type="module">
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getDatabase, ref, set, get, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+
+        // Firebase Configuration - REPLACE WITH YOUR CONFIG
+        
+        const firebaseConfig = {
+    apiKey: "AIzaSyAIMi4Tbq6REM63BDLz9b08Kpz0C-icyWQ",
+    authDomain: "cptrack-358ea.firebaseapp.com",
+    databaseURL: "https://cptrack-358ea-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "cptrack-358ea",
+    storageBucket: "cptrack-358ea.firebasestorage.app",
+    messagingSenderId: "980028842625",
+    appId: "1:980028842625:web:91b6f26bccdd811492e380"
+  };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const database = getDatabase(app);
+
+        // Global variables
         let contests = [];
         let currentProblem = null;
+        let isAdmin = false;
         const problemLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
 
-        window.onload = function() {
-            loadContests();
-            renderContests();
-        };
+        // Admin credentials
+        const ADMIN_USER = 'redhunt';
+        const ADMIN_PASS = '@#Efaz1@#';
 
+        // Make functions global
+        window.toggleAdmin = toggleAdmin;
+        window.closeLogin = closeLogin;
+        window.adminLogin = adminLogin;
+        window.toggleAddContest = toggleAddContest;
+        window.saveContest = saveContest;
+        window.deleteContest = deleteContest;
+        window.toggleContest = toggleContest;
+        window.openProblem = openProblem;
+        window.closeProblemModal = closeProblemModal;
+        window.submitProblem = submitProblem;
+        window.addComment = addComment;
+
+        // Load contests from Firebase
         function loadContests() {
-            const saved = localStorage.getItem('cp-contests');
-            if (saved) {
-                contests = JSON.parse(saved);
+            const contestsRef = ref(database, 'contests');
+            onValue(contestsRef, (snapshot) => {
+                const data = snapshot.val();
+                contests = data ? Object.values(data) : [];
+                renderContests();
+            });
+        }
+
+        // Save to Firebase
+        async function saveToFirebase() {
+            try {
+                const contestsRef = ref(database, 'contests');
+                const contestsObj = {};
+                contests.forEach(c => {
+                    contestsObj[c.id] = c;
+                });
+                await set(contestsRef, contestsObj);
+            } catch (error) {
+                console.error('Error saving:', error);
+                alert('Error saving data. Please try again.');
             }
         }
 
-        function saveToStorage() {
-            localStorage.setItem('cp-contests', JSON.stringify(contests));
+        // Check admin session
+        function checkAdminSession() {
+            const session = localStorage.getItem('adminSession');
+            if (session === 'true') {
+                isAdmin = true;
+                updateAdminUI();
+            }
+        }
+
+        function toggleAdmin() {
+            if (isAdmin) {
+                adminLogout();
+            } else {
+                document.getElementById('loginModal').classList.add('active');
+            }
+        }
+
+        function closeLogin() {
+            document.getElementById('loginModal').classList.remove('active');
+            document.getElementById('adminUser').value = '';
+            document.getElementById('adminPass').value = '';
+        }
+
+        function adminLogin() {
+            const user = document.getElementById('adminUser').value;
+            const pass = document.getElementById('adminPass').value;
+
+            if (user === ADMIN_USER && pass === ADMIN_PASS) {
+                isAdmin = true;
+                localStorage.setItem('adminSession', 'true');
+                updateAdminUI();
+                closeLogin();
+                alert('✅ Admin login successful!');
+            } else {
+                alert('❌ Invalid credentials!');
+            }
+        }
+
+        function adminLogout() {
+            if (confirm('Logout from admin?')) {
+                isAdmin = false;
+                localStorage.removeItem('adminSession');
+                updateAdminUI();
+                renderContests();
+            }
+        }
+
+        function updateAdminUI() {
+            const btn = document.getElementById('adminBtn');
+            const addBtn = document.getElementById('addContestBtn');
+
+            if (isAdmin) {
+                btn.textContent = '✅ Admin (Logout)';
+                btn.classList.add('logged-in');
+                addBtn.classList.remove('hidden');
+            } else {
+                btn.textContent = '👑 Admin Login';
+                btn.classList.remove('logged-in');
+                addBtn.classList.add('hidden');
+            }
         }
 
         function toggleAddContest() {
-            const form = document.getElementById('addContestForm');
-            form.classList.toggle('hidden');
+            document.getElementById('addContestForm').classList.toggle('hidden');
         }
 
-        function saveContest() {
+        async function saveContest() {
             const name = document.getElementById('contestName').value.trim();
             const link = document.getElementById('contestLink').value.trim();
             
@@ -582,32 +857,34 @@
                     id: `${Date.now()}-${label}`,
                     name: label,
                     code: '',
-                    explanation: ''
+                    explanation: '',
+                    comments: []
                 }))
             };
 
             contests.push(contest);
-            saveToStorage();
+            await saveToFirebase();
             
             document.getElementById('contestName').value = '';
             document.getElementById('contestLink').value = '';
             toggleAddContest();
-            renderContests();
         }
 
-        function deleteContest(contestId) {
-            if (confirm('Delete this contest and all its problems?')) {
+        async function deleteContest(contestId) {
+            if (!isAdmin) {
+                alert('Only admin can delete contests!');
+                return;
+            }
+            if (confirm('Delete this contest?')) {
                 contests = contests.filter(c => c.id !== contestId);
-                saveToStorage();
-                renderContests();
+                await saveToFirebase();
             }
         }
 
-        function toggleContest(contestId) {
+        async function toggleContest(contestId) {
             const contest = contests.find(c => c.id === contestId);
             contest.expanded = !contest.expanded;
-            saveToStorage();
-            renderContests();
+            await saveToFirebase();
         }
 
         function openProblem(contestId, problemId) {
@@ -621,9 +898,23 @@
             badge.textContent = problem.name;
             badge.className = `problem-badge ${solved ? 'solved' : 'unsolved'}`;
             
-            document.getElementById('problemTitle').innerHTML = `Problem ${problem.name} ${solved ? '✓' : ''}`;
-            document.getElementById('problemCode').value = problem.code;
-            document.getElementById('problemExplanation').value = problem.explanation;
+            document.getElementById('problemTitle').textContent = `Problem ${problem.name} ${solved ? '✓' : ''}`;
+            
+            if (isAdmin) {
+                document.getElementById('adminView').classList.remove('hidden');
+                document.getElementById('userView').classList.add('hidden');
+                document.getElementById('submitBtn').classList.remove('hidden');
+                document.getElementById('problemCode').value = problem.code;
+                document.getElementById('problemExplanation').value = problem.explanation;
+            } else {
+                document.getElementById('adminView').classList.add('hidden');
+                document.getElementById('userView').classList.remove('hidden');
+                document.getElementById('submitBtn').classList.add('hidden');
+                document.getElementById('codeView').textContent = problem.code || 'No code added yet';
+                document.getElementById('explanationView').textContent = problem.explanation || 'No explanation added yet';
+            }
+
+            renderComments(problem.comments || []);
             document.getElementById('problemModal').classList.add('active');
         }
 
@@ -632,7 +923,7 @@
             currentProblem = null;
         }
 
-        function submitProblem() {
+        async function submitProblem() {
             const code = document.getElementById('problemCode').value;
             const explanation = document.getElementById('problemExplanation').value;
 
@@ -642,9 +933,62 @@
             problem.code = code;
             problem.explanation = explanation;
             
-            saveToStorage();
+            await saveToFirebase();
+            alert('✅ Solution saved!');
             closeProblemModal();
-            renderContests();
+        }
+
+        async function addComment() {
+            const name = document.getElementById('userName').value.trim();
+            const text = document.getElementById('commentInput').value.trim();
+            
+            if (!name) {
+                alert('Please enter your name');
+                return;
+            }
+            
+            if (!text) {
+                alert('Please enter a comment');
+                return;
+            }
+
+            const contest = contests.find(c => c.id === currentProblem.contestId);
+            const problem = contest.problems.find(p => p.id === currentProblem.problemId);
+            
+            if (!problem.comments) {
+                problem.comments = [];
+            }
+
+            problem.comments.push({
+                id: Date.now(),
+                author: name,
+                text: text,
+                time: new Date().toLocaleString()
+            });
+
+            await saveToFirebase();
+            document.getElementById('userName').value = '';
+            document.getElementById('commentInput').value = '';
+            renderComments(problem.comments);
+            alert('✅ Comment posted!');
+        }
+
+        function renderComments(comments) {
+            const list = document.getElementById('commentsList');
+            if (!comments || comments.length === 0) {
+                list.innerHTML = '<p style="color: #9ca3af; font-size: 0.9rem;">No comments yet. Be the first!</p>';
+                return;
+            }
+
+            list.innerHTML = comments.map(comment => `
+                <div class="comment-item">
+                    <div class="comment-header">
+                        <span class="comment-author">👤 ${comment.author}</span>
+                        <span class="comment-time">${comment.time}</span>
+                    </div>
+                    <div class="comment-text">${comment.text}</div>
+                </div>
+            `).join('');
         }
 
         function isSolved(problem) {
@@ -669,7 +1013,7 @@
                 list.innerHTML = `
                     <div class="empty-state">
                         <div class="empty-icon">💻</div>
-                        <p class="empty-text">No contests yet. Add your first contest to get started!</p>
+                        <p class="empty-text">No contests yet. ${isAdmin ? 'Click "Add Contest" to get started!' : 'Admin can add contests!'}</p>
                     </div>
                 `;
                 document.getElementById('overallProgress').classList.add('hidden');
@@ -703,7 +1047,7 @@
                                         <div class="stats-percentage">${percentage}%</div>
                                         <div class="stats-solved">${solved}/10 solved</div>
                                     </div>
-                                    <button onclick="deleteContest(${contest.id})" class="delete-btn">🗑️</button>
+                                    ${isAdmin ? `<button onclick="deleteContest(${contest.id})" class="delete-btn">🗑️</button>` : ''}
                                 </div>
                             </div>
                             <div class="progress-bar-container">
@@ -726,6 +1070,12 @@
                 `;
             }).join('');
         }
+
+        // Initialize
+        window.onload = function() {
+            checkAdminSession();
+            loadContests();
+        };
     </script>
 </body>
 </html>
