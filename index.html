@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CP Contest Tracker</title>
+    <title>Secure CP Contest Tracker</title>
     <style>
         * {
             margin: 0;
@@ -600,7 +600,7 @@
     <div id="loginModal" class="login-modal">
         <div class="login-box">
             <h2 class="login-title">🔐 Admin Login</h2>
-            <input type="text" id="adminUser" placeholder="Username">
+            <input type="text" id="adminUser" placeholder="Email">
             <input type="password" id="adminPass" placeholder="Password">
             <button onclick="adminLogin()" class="btn btn-success" style="width: 100%; justify-content: center; margin-bottom: 10px;">
                 Login
@@ -608,6 +608,9 @@
             <button onclick="closeLogin()" class="btn btn-secondary" style="width: 100%; justify-content: center;">
                 Cancel
             </button>
+            <p style="color: #d8b4fe; font-size: 0.875rem; text-align: center; margin-top: 15px;">
+                Demo: admin@example.com / password123
+            </p>
         </div>
     </div>
 
@@ -616,8 +619,8 @@
         <div class="header">
             <div class="header-top">
                 <div>
-                    <h1>🏆 CP Contest Tracker</h1>
-                    <p class="subtitle">Track your competitive programming progress</p>
+                    <h1>🏆 Secure CP Contest Tracker</h1>
+                    <p class="subtitle">Track your competitive programming progress with secure authentication</p>
                 </div>
                 <button id="addContestBtn" onclick="toggleAddContest()" class="btn btn-primary hidden">
                     <span>+</span>
@@ -708,32 +711,34 @@
     <script type="module">
         import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
         import { getDatabase, ref, set, get, remove, onValue } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js';
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            signOut, 
+            onAuthStateChanged 
+        } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
-        // Firebase Configuration - REPLACE WITH YOUR CONFIG
-        
+        // Firebase Configuration
         const firebaseConfig = {
-    apiKey: "AIzaSyAIMi4Tbq6REM63BDLz9b08Kpz0C-icyWQ",
-    authDomain: "cptrack-358ea.firebaseapp.com",
-    databaseURL: "https://cptrack-358ea-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "cptrack-358ea",
-    storageBucket: "cptrack-358ea.firebasestorage.app",
-    messagingSenderId: "980028842625",
-    appId: "1:980028842625:web:91b6f26bccdd811492e380"
-  };
+            apiKey: "AIzaSyAIMi4Tbq6REM63BDLz9b08Kpz0C-icyWQ",
+            authDomain: "cptrack-358ea.firebaseapp.com",
+            databaseURL: "https://cptrack-358ea-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "cptrack-358ea",
+            storageBucket: "cptrack-358ea.firebasestorage.app",
+            messagingSenderId: "980028842625",
+            appId: "1:980028842625:web:91b6f26bccdd811492e380"
+        };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
+        const auth = getAuth(app);
 
         // Global variables
         let contests = [];
         let currentProblem = null;
         let isAdmin = false;
         const problemLabels = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'];
-
-        // Admin credentials
-        const ADMIN_USER = 'redhunt';
-        const ADMIN_PASS = '@#Efaz1@#';
 
         // Make functions global
         window.toggleAdmin = toggleAdmin;
@@ -747,6 +752,18 @@
         window.closeProblemModal = closeProblemModal;
         window.submitProblem = submitProblem;
         window.addComment = addComment;
+
+        // Auth state listener
+        onAuthStateChanged(auth, (user) => {
+            isAdmin = !!user;
+            updateAdminUI();
+            
+            if (user) {
+                console.log('Admin logged in:', user.email);
+            } else {
+                console.log('Admin logged out');
+            }
+        });
 
         // Load contests from Firebase
         function loadContests() {
@@ -773,15 +790,6 @@
             }
         }
 
-        // Check admin session
-        function checkAdminSession() {
-            const session = localStorage.getItem('adminSession');
-            if (session === 'true') {
-                isAdmin = true;
-                updateAdminUI();
-            }
-        }
-
         function toggleAdmin() {
             if (isAdmin) {
                 adminLogout();
@@ -796,27 +804,43 @@
             document.getElementById('adminPass').value = '';
         }
 
-        function adminLogin() {
-            const user = document.getElementById('adminUser').value;
-            const pass = document.getElementById('adminPass').value;
+        async function adminLogin() {
+            const email = document.getElementById('adminUser').value;
+            const password = document.getElementById('adminPass').value;
 
-            if (user === ADMIN_USER && pass === ADMIN_PASS) {
-                isAdmin = true;
-                localStorage.setItem('adminSession', 'true');
-                updateAdminUI();
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
                 closeLogin();
                 alert('✅ Admin login successful!');
-            } else {
-                alert('❌ Invalid credentials!');
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessage = 'Login failed!';
+                
+                switch (error.code) {
+                    case 'auth/invalid-email':
+                        errorMessage = 'Invalid email address!';
+                        break;
+                    case 'auth/user-not-found':
+                    case 'auth/wrong-password':
+                        errorMessage = 'Invalid email or password!';
+                        break;
+                    case 'auth/too-many-requests':
+                        errorMessage = 'Too many attempts. Try again later!';
+                        break;
+                }
+                
+                alert('❌ ' + errorMessage);
             }
         }
 
-        function adminLogout() {
+        async function adminLogout() {
             if (confirm('Logout from admin?')) {
-                isAdmin = false;
-                localStorage.removeItem('adminSession');
-                updateAdminUI();
-                renderContests();
+                try {
+                    await signOut(auth);
+                    alert('✅ Logged out successfully!');
+                } catch (error) {
+                    console.error('Logout error:', error);
+                }
             }
         }
 
@@ -1073,7 +1097,6 @@
 
         // Initialize
         window.onload = function() {
-            checkAdminSession();
             loadContests();
         };
     </script>
