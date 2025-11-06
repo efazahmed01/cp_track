@@ -502,16 +502,42 @@
             font-size: 0.95rem;
         }
 
-        .view-only {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 15px;
+        /* FIXED: Better Code Display */
+        .code-editor, .view-only {
+            background: #1a1a1a !important;
+            padding: 20px !important;
             border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            font-family: 'Courier New', monospace;
+            border: 1px solid #333;
+            color: #f8f8f2;
+            font-family: 'Fira Code', 'Cascadia Code', 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.5;
             white-space: pre-wrap;
             word-wrap: break-word;
+            overflow-wrap: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            tab-size: 4;
         }
+
+        .code-editor {
+            resize: vertical;
+            min-height: 200px;
+        }
+
+        .view-only {
+            background: #1a1a1a !important;
+            max-height: 400px;
+        }
+
+        /* Syntax Highlighting */
+        .code-keyword { color: #ff79c6; }
+        .code-string { color: #f1fa8c; }
+        .code-comment { color: #6272a4; }
+        .code-number { color: #bd93f9; }
+        .code-function { color: #50fa7b; }
+        .code-preprocessor { color: #ffb86c; }
+        .code-type { color: #8be9fd; }
 
         .comments-section {
             margin-top: 25px;
@@ -567,6 +593,13 @@
             display: none !important;
         }
 
+        /* Better explanation textarea */
+        #problemExplanation {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            min-height: 150px;
+        }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 1.75rem;
@@ -585,8 +618,15 @@
                 padding: 10px 20px;
                 font-size: 0.875rem;
             }
+
+            .code-editor, .view-only {
+                font-size: 12px;
+                padding: 15px !important;
+            }
         }
     </style>
+    <!-- Add Fira Code font for better code display -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Admin Button (Top Right) -->
@@ -608,9 +648,6 @@
             <button onclick="closeLogin()" class="btn btn-secondary" style="width: 100%; justify-content: center;">
                 Cancel
             </button>
-            <p style="color: #d8b4fe; font-size: 0.875rem; text-align: center; margin-top: 15px;">
-                Demo: admin@example.com / password123
-            </p>
         </div>
     </div>
 
@@ -669,11 +706,11 @@
             <div id="adminView" class="hidden">
                 <div class="form-group">
                     <label>💾 Code:</label>
-                    <textarea id="problemCode" placeholder="Enter your code here..." rows="12"></textarea>
+                    <textarea id="problemCode" class="code-editor" placeholder="Enter your C++ code here..." rows="12"></textarea>
                 </div>
                 <div class="form-group">
                     <label>📝 Explanation:</label>
-                    <textarea id="problemExplanation" placeholder="Explain your approach..." rows="6"></textarea>
+                    <textarea id="problemExplanation" placeholder="Explain your approach, time complexity, logic..." rows="6"></textarea>
                 </div>
             </div>
 
@@ -934,12 +971,35 @@
                 document.getElementById('adminView').classList.add('hidden');
                 document.getElementById('userView').classList.remove('hidden');
                 document.getElementById('submitBtn').classList.add('hidden');
-                document.getElementById('codeView').textContent = problem.code || 'No code added yet';
+                
+                // Format code with basic syntax highlighting for display
+                const formattedCode = formatCodeForDisplay(problem.code);
+                document.getElementById('codeView').innerHTML = formattedCode || '<span style="color: #6272a4;">No code added yet</span>';
                 document.getElementById('explanationView').textContent = problem.explanation || 'No explanation added yet';
             }
 
             renderComments(problem.comments || []);
             document.getElementById('problemModal').classList.add('active');
+        }
+
+        // Basic code formatting for display
+        function formatCodeForDisplay(code) {
+            if (!code) return '';
+            
+            return code
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;')
+                .replace(/#include/g, '<span class="code-preprocessor">#include</span>')
+                .replace(/\busing namespace\b/g, '<span class="code-keyword">using namespace</span>')
+                .replace(/\b(int|void|bool|char|double|float|long|short|auto)\b/g, '<span class="code-type">$1</span>')
+                .replace(/\b(if|else|for|while|do|return|break|continue|switch|case|default)\b/g, '<span class="code-keyword">$1</span>')
+                .replace(/\b(cin|cout|endl)\b/g, '<span class="code-function">$1</span>')
+                .replace(/"([^"]*)"/g, '<span class="code-string">"$1"</span>')
+                .replace(/\/\/.*$/gm, '<span class="code-comment">$&</span>')
+                .replace(/\b(\d+)\b/g, '<span class="code-number">$1</span>');
         }
 
         function closeProblemModal() {
